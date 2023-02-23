@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ilyapanteleychuk.mongorest.exception.FileStorageException;
 import com.ilyapanteleychuk.mongorest.model.FamousPeople;
 import com.ilyapanteleychuk.mongorest.properties.FileStorageProperties;
-import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,8 +43,10 @@ public class FileProcessorService {
         String jsonPath = storeZipFileContent(file);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            return Arrays.asList(objectMapper.readValue
+            List<FamousPeople> famousPeople = Arrays.asList(objectMapper.readValue
                     (new File(jsonPath), FamousPeople[].class));
+            deleteFile(jsonPath);
+            return famousPeople;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -80,15 +80,18 @@ public class FileProcessorService {
                 stream = zipFile.getInputStream(entry);
                 Files.copy(stream, Path.of(jsonFilePath),
                         StandardCopyOption.REPLACE_EXISTING);
-                File fileToDelete = new File(
-                        "mongorest/src/main/resources/temp/pep.zip");
-                if(!fileToDelete.delete()){
-                    throw new IOException("Cannot delete file " + fileToDelete);
-                }
+                deleteFile("mongorest/src/main/resources/temp/pep.zip");
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return jsonFilePath;
+    }
+    
+    private void deleteFile(String filePath) throws IOException {
+        File fileToDelete = new File(filePath);
+        if(!fileToDelete.delete()){
+            throw new IOException("Cannot delete file " + fileToDelete);
+        }
     }
 }
