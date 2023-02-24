@@ -2,9 +2,9 @@ package com.ilyapanteleychuk.mongorest.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ilyapanteleychuk.mongorest.exception.FileStorageException;
-import com.ilyapanteleychuk.mongorest.model.FamousPeople;
-import com.ilyapanteleychuk.mongorest.properties.FileStorageProperties;
+import com.ilyapanteleychuk.mongorest.model.FamousPeopleData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -25,13 +24,12 @@ import java.util.zip.ZipFile;
 @Service
 public class FileProcessorService {
     
-    private final Path fileStorageLocation;
+    @Value("file.upload-dir")
+    private Path fileStorageLocation;
     
     @Autowired
-    public FileProcessorService(FileStorageProperties fileStorageProperties) {
-        this.fileStorageLocation = Paths
-                .get(fileStorageProperties.getUploadDir())
-                .toAbsolutePath().normalize();
+    public FileProcessorService() {
+        this.fileStorageLocation.toAbsolutePath().normalize();
         try{
             Files.createDirectories(this.fileStorageLocation);
         } catch (IOException e) {
@@ -39,14 +37,15 @@ public class FileProcessorService {
         }
     }
     
-    public List<FamousPeople> parseJsonContent(MultipartFile file){
+    //maybe regex
+    public List<FamousPeopleData> parseJsonContent(MultipartFile file){
         String jsonPath = storeZipFileContent(file);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            List<FamousPeople> famousPeople = Arrays.asList(objectMapper.readValue
-                    (new File(jsonPath), FamousPeople[].class));
+            List<FamousPeopleData> famousPersonData = Arrays.asList(objectMapper.readValue
+                    (new File(jsonPath), FamousPeopleData[].class));
             deleteFile(jsonPath);
-            return famousPeople;
+            return famousPersonData;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -70,6 +69,7 @@ public class FileProcessorService {
     }
     
     private String unZipFileToJson(String fileToUnzip){
+        //change format of unzipped file
         String jsonFilePath = fileToUnzip.substring(0, fileToUnzip.indexOf("."))
                 .concat(".json");
         InputStream stream;
@@ -80,7 +80,7 @@ public class FileProcessorService {
                 stream = zipFile.getInputStream(entry);
                 Files.copy(stream, Path.of(jsonFilePath),
                         StandardCopyOption.REPLACE_EXISTING);
-                deleteFile("mongorest/src/main/resources/temp/pep.zip");
+                deleteFile("mongorest/src/main/resources/temp/" + fileToUnzip);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -10,7 +10,7 @@ import lombok.extern.jackson.Jacksonized;
 @Setter
 @Builder
 @Jacksonized
-public class MostPopularPeopleDto {
+public class PopularPeopleDto {
 
     private String firstName;
     private int amount;

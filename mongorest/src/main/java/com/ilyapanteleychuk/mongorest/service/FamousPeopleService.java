@@ -2,9 +2,9 @@ package com.ilyapanteleychuk.mongorest.service;
 
 import com.ilyapanteleychuk.mongorest.dto.FamousPeopleInfoDto;
 import com.ilyapanteleychuk.mongorest.dto.FamousPeopleSearchDto;
-import com.ilyapanteleychuk.mongorest.dto.MostPopularPeopleDto;
+import com.ilyapanteleychuk.mongorest.dto.PopularPeopleDto;
 import com.ilyapanteleychuk.mongorest.dto.PageDto;
-import com.ilyapanteleychuk.mongorest.model.FamousPeople;
+import com.ilyapanteleychuk.mongorest.model.FamousPeopleData;
 import com.ilyapanteleychuk.mongorest.repository.FamousPeopleCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,19 +27,19 @@ public class FamousPeopleService {
     }
     
     public PageDto<FamousPeopleInfoDto> searchPeople(FamousPeopleSearchDto searchDto) {
-        Page<FamousPeople> page = famousPeopleRepository.search(searchDto);
+        Page<FamousPeopleData> page = famousPeopleRepository.search(searchDto);
         return PageDto.fromPage(page, this::toInfoDto);
     }
     
-    public List<MostPopularPeopleDto> showStatistic() {
+    public List<PopularPeopleDto> showStatistic() {
         return famousPeopleRepository.calculateStatistic();
     }
     
-    private FamousPeopleInfoDto toInfoDto(FamousPeople famousPeople){
+    private FamousPeopleInfoDto toInfoDto(FamousPeopleData famousPeopleData){
         return FamousPeopleInfoDto.builder()
-                .fullName(famousPeople.getFull_name())
-                .isPep(famousPeople.isPep())
-                .died(famousPeople.isDied())
+                .fullName(famousPeopleData.getFullName())
+                .isPep(famousPeopleData.isPep())
+                .died(famousPeopleData.isDied())
                 .build();
     }
 }
