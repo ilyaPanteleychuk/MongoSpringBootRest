@@ -20,10 +20,8 @@ public class FamousPeopleService {
     private final FileProcessorService fileProcessorService;
     private final FamousPeopleCustomRepository famousPeopleRepository;
     
-    //this logic should be replaced
     public void fillDbFromFile(MultipartFile multipartFile){
-        famousPeopleRepository
-                .saveAll(fileProcessorService.parseJsonContent(multipartFile));
+        famousPeopleRepository.saveAll(fileProcessorService.parseJsonContent(multipartFile));
     }
     
     public PageDto<FamousPeopleInfoDto> searchPeople(FamousPeopleSearchDto searchDto) {

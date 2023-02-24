@@ -30,6 +30,7 @@ import static com.mongodb.client.model.Aggregates.match;
 import static com.mongodb.client.model.Aggregates.sort;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
+
 /**
  * Repository class with extended functionality for
  * {@link FamousPeopleData} class

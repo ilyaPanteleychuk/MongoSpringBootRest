@@ -37,7 +37,6 @@ public class FileProcessorService {
         }
     }
     
-    //maybe regex Maybe take it to FamousPeopleService
     public List<FamousPeopleData> parseJsonContent(MultipartFile file){
         String jsonPath = storeZipFileContent(file);
         try {
@@ -69,7 +68,7 @@ public class FileProcessorService {
     }
     
     private String unZipFileToJson(String fileToUnzip){
-        //change format of unzipped file
+        //changing format of unzipped file
         String jsonFilePath = fileToUnzip.substring(0, fileToUnzip.indexOf("."))
                 .concat(".json");
         InputStream stream;
