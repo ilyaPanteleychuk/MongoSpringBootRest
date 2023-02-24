@@ -1,5 +1,6 @@
 package com.ilyapanteleychuk.mongorest.controller;
 
+import com.ilyapanteleychuk.mongorest.model.FamousPeopleData;
 import com.ilyapanteleychuk.mongorest.service.FamousPeopleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-
+/**
+ * Controller for managing file-uploading endpoints
+ *
+ * @author Ilya Panteleychuk
+ */
 @RestController
 @RequestMapping("api/v1")
 @RequiredArgsConstructor

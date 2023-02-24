@@ -26,7 +26,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+/**
+ * Tests REST endpoints /people/* provided by {@link FamousPeopleController}.
+ */
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         classes = MongorestApplication.class)
@@ -46,6 +48,9 @@ class FamousPeopleControllerTest {
         famousPeopleRepository.deleteAll();
     }
     
+    /**
+     * Tests {@link FamousPeopleController#search(FamousPeopleSearchDto)} method}.
+     */
     @Test
     void search_shouldReturnPeopleByName_whenOnlyNameSpecified() throws Exception {
         FamousPeopleData person1 = buildFamousPeople
@@ -74,7 +79,11 @@ class FamousPeopleControllerTest {
         assertThat(result.getList().get(0).isPep()).isEqualTo(true);
         assertThat(result.getList().get(0).isDied()).isEqualTo(false);
     }
-    
+    /**
+     * Tests
+     * {@link FamousPeopleController#search(FamousPeopleSearchDto)}
+     * method with different json arguments}.
+     */
     @Test
     void search_shouldReturnPeopleByNameAndPatronymic_whenPatronymicAndNameSpecified() throws Exception {
         FamousPeopleData person1 = buildFamousPeople
@@ -113,6 +122,10 @@ class FamousPeopleControllerTest {
         assertThat(result.getList().get(0).isDied()).isEqualTo(false);
     }
     
+    /**
+     * Tests
+     * {@link FamousPeopleController#showStatistic() method}
+     */
     @Test
     void showStatistic_shouldReturnOnlyPepPeopleWithAmount_whenSuchExists() throws Exception {
         FamousPeopleData person1 = buildFamousPeople
@@ -131,7 +144,8 @@ class FamousPeopleControllerTest {
                 mockMvc.perform(get("/api/v1/people/showStatistic")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse();
-        List<PopularPeopleDto> result = parseJson(response.getContentAsString(), new TypeReference<>() {});
+        List<PopularPeopleDto> result = parseJson(response.getContentAsString(),
+                new TypeReference<>() {});
         assertThat(result.size()).isEqualTo(2);
         assertThat(result.get(0).getFirstName()).isEqualTo("Ilya");
         assertThat(result.get(0).getAmount()).isEqualTo(2);

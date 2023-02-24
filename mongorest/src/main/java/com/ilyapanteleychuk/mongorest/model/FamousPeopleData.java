@@ -11,7 +11,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
-
+/**
+ * Representation of database entity famous_people
+ *
+ * @author Ilya Panteleychuk
+ */
 @Getter
 @Setter
 @AllArgsConstructor
